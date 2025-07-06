@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="collection-section">
+    {% for item in items %}
+    <div class="saree-card">
+        <div class="image-carousel">
+            {% for img in item.images.all %}
+                <img src="{{ img.image.url }}" alt="{{ item.name }}">
+            {% endfor %}
+        </div>
+        <div class="product-info">
+            <h3>{{ item.name }}</h3>
+            <p class="price">₹ {{ item.price }}</p>
+            <a href="/product/{{ item.id }}/" class="btn">Buy Now</a>
+            <a href="{% url 'add_to_cart' item.id %}" class="btn">Add to Cart</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

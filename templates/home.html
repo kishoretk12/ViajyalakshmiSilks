@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- 🧺 Product Listing Section -->
+<div class="collection-section" style="padding: 40px 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+    {% for product in products %}
+    <div class="saree-card" style="width: 280px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 15px; border-radius: 10px; text-align: center;">
+        <div class="image-container" style="position: relative;">
+            {% for image in product.images.all %}
+                <img src="{{ image.image.url }}"
+                     class="saree-image saree-image-{{ product.id }}"
+                     onclick="zoomImage(this)"
+                     style="width: 100%; cursor: zoom-in; border-radius: 8px; {% if not forloop.first %}display: none;{% endif %}">
+            {% endfor %}
+            {% if product.images.count > 1 %}
+                <button onclick="prevImage({{ product.id }})" class="carousel-btn left" style="position: absolute; top: 45%; left: 5px;">&#10094;</button>
+                <button onclick="nextImage({{ product.id }})" class="carousel-btn right" style="position: absolute; top: 45%; right: 5px;">&#10095;</button>
+                <div class="image-index" id="index-{{ product.id }}" style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 3px 7px; border-radius: 5px;">1 / {{ product.images.count }}</div>
+            {% endif %}
+        </div>
+        <h3 style="margin-top: 15px;">{{ product.name }}</h3>
+        <p class="price" style="font-weight: bold; margin-bottom: 10px;">₹ {{ product.price }}</p>
+        <a href="{% url 'add_to_cart' product.id %}" class="btn add-cart" style="background: green; color: #fff; padding: 6px 12px; text-decoration: none; border-radius: 5px;">Add to Cart</a>
+    </div>
+    {% empty %}
+        <p>No products available right now.</p>
+    {% endfor %}
+</div>
+
+<!-- 🔍 Zoom Modal -->
+<div id="zoomModal" class="zoom-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 9999;">
+    <span onclick="closeModal()" style="position: absolute; top: 20px; right: 30px; font-size: 36px; color: #fff; cursor: pointer;">&times;</span>
+    <img id="zoomedImage" src="" style="max-width: 90%; max-height: 90%;">
+</div>
+
+<!-- 📜 Scripts -->
+<script>
+    const imageIndexes = {};
+
+    function nextImage(id) {
+        const images = document.querySelectorAll(`.saree-image-${id}`);
+        if (!(id in imageIndexes)) imageIndexes[id] = 0;
+        images[imageIndexes[id]].style.display = 'none';
+        imageIndexes[id] = (imageIndexes[id] + 1) % images.length;
+        images[imageIndexes[id]].style.display = 'block';
+        document.getElementById(`index-${id}`).innerText = `${imageIndexes[id] + 1} / ${images.length}`;
+    }
+
+    function prevImage(id) {
+        const images = document.querySelectorAll(`.saree-image-${id}`);
+        if (!(id in imageIndexes)) imageIndexes[id] = 0;
+        images[imageIndexes[id]].style.display = 'none';
+        imageIndexes[id] = (imageIndexes[id] - 1 + images.length) % images.length;
+        images[imageIndexes[id]].style.display = 'block';
+        document.getElementById(`index-${id}`).innerText = `${imageIndexes[id] + 1} / ${images.length}`;
+    }
+
+    function zoomImage(img) {
+        document.getElementById("zoomedImage").src = img.src;
+        document.getElementById("zoomModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("zoomModal").style.display = "none";
+    }
+</script>
+
+{% endblock %}
+
