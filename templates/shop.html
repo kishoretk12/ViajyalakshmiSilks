@@ -1,21 +1,70 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
+
+<!-- 🛍️ Product Listing ONLY -->
 <div class="collection-section">
     {% for item in items %}
     <div class="saree-card">
-        <div class="image-carousel">
-            {% for img in item.images.all %}
-                <img src="{{ img.image.url }}" alt="{{ item.name }}">
+        <div class="image-container">
+            {% for image in item.images.all %}
+                <img src="{{ image.image.url }}"
+                     class="saree-image saree-image-{{ item.id }}"
+                     onclick="zoomImage(this)"
+                     {% if not forloop.first %}style="display:none;"{% endif %}>
             {% endfor %}
+            {% if item.images.count > 1 %}
+                <button onclick="prevImage({{ item.id }})" class="carousel-btn left">&#10094;</button>
+                <button onclick="nextImage({{ item.id }})" class="carousel-btn right">&#10095;</button>
+                <div class="image-index" id="index-{{ item.id }}">1 / {{ item.images.count }}</div>
+            {% endif %}
         </div>
-        <div class="product-info">
-            <h3>{{ item.name }}</h3>
-            <p class="price">₹ {{ item.price }}</p>
-            <a href="/product/{{ item.id }}/" class="btn">Buy Now</a>
-            <a href="{% url 'add_to_cart' item.id %}" class="btn">Add to Cart</a>
-        </div>
+        <h3>{{ item.name }}</h3>
+        <p class="price">₹ {{ item.price }}</p>
+        <a href="{% url 'product_detail' item.id %}" class="btn buy-now">Buy Now</a>
+        <a href="{% url 'add_to_cart' item.id %}" class="btn add-cart">Add to Cart</a>
     </div>
+    {% empty %}
+        <p>No products available right now.</p>
     {% endfor %}
 </div>
+
+<!-- 🔍 Zoom Modal -->
+<div id="zoomModal" class="zoom-modal">
+    <span onclick="closeModal()">&times;</span>
+    <img id="zoomedImage" src="">
+</div>
+
+<script>
+    const imageIndexes = {};
+
+    function nextImage(id) {
+        const images = document.querySelectorAll(`.saree-image-${id}`);
+        if (!(id in imageIndexes)) imageIndexes[id] = 0;
+        images[imageIndexes[id]].style.display = 'none';
+        imageIndexes[id] = (imageIndexes[id] + 1) % images.length;
+        images[imageIndexes[id]].style.display = 'block';
+        document.getElementById(`index-${id}`).innerText = `${imageIndexes[id] + 1} / ${images.length}`;
+    }
+
+    function prevImage(id) {
+        const images = document.querySelectorAll(`.saree-image-${id}`);
+        if (!(id in imageIndexes)) imageIndexes[id] = 0;
+        images[imageIndexes[id]].style.display = 'none';
+        imageIndexes[id] = (imageIndexes[id] - 1 + images.length) % images.length;
+        images[imageIndexes[id]].style.display = 'block';
+        document.getElementById(`index-${id}`).innerText = `${imageIndexes[id] + 1} / ${images.length}`;
+    }
+
+    function zoomImage(img) {
+        document.getElementById("zoomedImage").src = img.src;
+        document.getElementById("zoomModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("zoomModal").style.display = "none";
+    }
+</script>
+
 {% endblock %}
 

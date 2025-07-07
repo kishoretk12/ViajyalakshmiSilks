@@ -5,62 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vijayalakshmi Silks</title>
+
+    <!-- 🎨 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- 🌈 CSS -->
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .site-header {
-            background-color: #fff;
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-size: 24px;
-            color: #b30000;
-            font-weight: bold;
-        }
-
-        .nav-links a {
-            margin-left: 20px;
-            color: #000;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .nav-links a:hover {
-            color: #b30000;
-        }
-
-        /* ✅ Banner Image Show Full */
-        .hero-banner img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        {% block extra_css %}
-        {% endblock %}
-    </style>
 </head>
 <body>
 
-    <!-- ✅ Header Section -->
+    <!-- 🌟 Header -->
     <header class="site-header">
         <div class="container">
             <h1 class="logo">Vijayalakshmi Silks</h1>
@@ -75,12 +29,7 @@
         </div>
     </header>
 
-    <!-- ✅ Full Width Banner (No Cropping) -->
-    <section class="hero-banner">
-        <img src="{% static 'images/vls-banner.png' %}" alt="VLS Banner">
-    </section>
-
-    <!-- ✅ Content Block -->
+    <!-- 🔽 Content Block -->
     {% block content %}
     {% endblock %}
 
