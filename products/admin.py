@@ -1,13 +1,11 @@
 from django.contrib import admin
-from .models import Saree, SareeImage
+from .models import Saree, Order
 
-class SareeImageInline(admin.TabularInline):
-    model = SareeImage
-    extra = 3  # Allows 3 image slots by default (can be more)
-
+@admin.register(Saree)
 class SareeAdmin(admin.ModelAdmin):
-    inlines = [SareeImageInline]
-    list_display = ('name', 'price')
+    list_display = ('name', 'price', 'available')
 
-admin.site.register(Saree, SareeAdmin)
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'saree', 'amount', 'paid', 'created_at')
 
